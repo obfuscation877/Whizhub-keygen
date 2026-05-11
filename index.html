@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whiz Hub — Your Key</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #04081a;
+    font-family: 'Sora', sans-serif;
+    overflow: hidden;
+  }
+
+  /* Snow canvas */
+  canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .card {
+    position: relative;
+    z-index: 10;
+    width: 440px;
+    background: rgba(10, 18, 45, 0.85);
+    border: 1px solid rgba(80, 140, 255, 0.25);
+    border-radius: 20px;
+    padding: 44px 36px 36px;
+    backdrop-filter: blur(20px);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 40px 80px rgba(0,0,0,0.6),
+      0 0 80px rgba(0,80,255,0.07);
+    animation: rise 0.6s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  @keyframes rise {
+    from { opacity:0; transform: translateY(24px) scale(0.96); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  /* Top accent */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%; height: 2px;
+    background: linear-gradient(90deg, transparent, #60b0ff, transparent);
+    border-radius: 2px;
+  }
+
+  .icon {
+    width: 60px; height: 60px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #1a3a90, #0a1840);
+    border: 1px solid rgba(80,160,255,0.4);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 0 30px rgba(60,120,255,0.15);
+    animation: iconpulse 3s ease-in-out infinite;
+  }
+
+  @keyframes iconpulse {
+    0%,100% { box-shadow: 0 0 20px rgba(60,120,255,0.15); }
+    50%      { box-shadow: 0 0 40px rgba(60,120,255,0.3); }
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: #3a6aaa;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #d0e8ff;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+
+  .sub {
+    text-align: center;
+    font-size: 11px;
+    color: #2a4470;
+    letter-spacing: 0.08em;
+    margin-bottom: 28px;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(60,100,200,0.4), transparent);
+    margin-bottom: 24px;
+  }
+
+  .label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #2a4470;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .key-box {
+    background: rgba(4, 8, 20, 0.8);
+    border: 1px solid rgba(60, 100, 200, 0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+
+  .key-box:hover {
+    border-color: rgba(80, 140, 255, 0.5);
+  }
+
+  .key-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 17px;
+    color: #80c8ff;
+    letter-spacing: 0.08em;
+    word-break: break-all;
+    flex: 1;
+    text-align: center;
+  }
+
+  .copy-btn {
+    background: rgba(30, 80, 200, 0.3);
+    border: 1px solid rgba(60, 120, 255, 0.3);
+    border-radius: 7px;
+    color: #80b0ff;
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    margin-left: 12px;
+  }
+
+  .copy-btn:hover {
+    background: rgba(40, 100, 255, 0.4);
+    border-color: rgba(80, 160, 255, 0.5);
+    color: #b0d4ff;
+  }
+
+  .copy-btn.copied {
+    background: rgba(20, 140, 80, 0.3);
+    border-color: rgba(40, 200, 100, 0.4);
+    color: #60e0a0;
+  }
+
+  .steps {
+    background: rgba(4, 8, 20, 0.5);
+    border: 1px solid rgba(30, 60, 130, 0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+  }
+
+  .steps p {
+    font-size: 11px;
+    color: #3a5a90;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+  }
+
+  .steps span {
+    color: #5080c0;
+    font-weight: 600;
+  }
+
+  .warning {
+    text-align: center;
+    font-size: 10px;
+    color: #1e3060;
+    letter-spacing: 0.06em;
+  }
+
+  /* Loading state */
+  .loading {
+    text-align: center;
+    color: #3a6aaa;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    padding: 20px 0;
+  }
+
+  .error-msg {
+    text-align: center;
+    color: #e05060;
+    font-size: 13px;
+    padding: 20px 0;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity:1; } 50% { opacity:0.3; }
+  }
+  .blink { animation: blink 1.2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="card">
+  <div class="icon">❄</div>
+  <h1>Whiz Hub</h1>
+  <h2>Your Access Key</h2>
+  <p class="sub">powered by whiz hub development</p>
+  <div class="divider"></div>
+
+  <div id="content">
+    <p class="loading blink">generating your key...</p>
+  </div>
+</div>
+
+<script>
+  // ── Snow ──────────────────────────────────────────
+  const canvas = document.getElementById('snow');
+  const ctx = canvas.getContext('2d');
+  let flakes = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 80; i++) {
+    flakes.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 2.5 + 0.5,
+      speed: Math.random() * 0.8 + 0.3,
+      drift: (Math.random() - 0.5) * 0.4,
+      opacity: Math.random() * 0.5 + 0.1
+    });
+  }
+
+  function drawSnow() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    flakes.forEach(f => {
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180, 210, 255, ${f.opacity})`;
+      ctx.fill();
+      f.y += f.speed;
+      f.x += f.drift;
+      if (f.y > canvas.height) { f.y = -5; f.x = Math.random() * canvas.width; }
+      if (f.x > canvas.width)  f.x = 0;
+      if (f.x < 0)             f.x = canvas.width;
+    });
+    requestAnimationFrame(drawSnow);
+  }
+  drawSnow();
+
+  // ── Key Generation ────────────────────────────────
+  async function generateKey() {
+    try {
+      const res = await fetch('/.netlify/functions/genkey');
+      const data = await res.json();
+
+      if (!data.key) throw new Error('No key returned');
+
+      document.getElementById('content').innerHTML = `
+        <p class="label">your one-time key</p>
+        <div class="key-box">
+          <span class="key-text" id="keyText">${data.key}</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyKey('${data.key}')">COPY</button>
+        </div>
+        <div class="steps">
+          <p><span>1.</span> Copy the key above</p>
+          <p><span>2.</span> Rejoin or open the Whiz Hub game</p>
+          <p><span>3.</span> Paste the key into the verification box</p>
+          <p><span>4.</span> Click Verify Key — you're in</p>
+        </div>
+        <p class="warning">⚠ this key is one-time use only — do not share it</p>
+      `;
+    } catch(e) {
+      document.getElementById('content').innerHTML = `
+        <p class="error-msg">failed to generate key.<br>please refresh the page.</p>
+      `;
+    }
+  }
+
+  function copyKey(key) {
+    navigator.clipboard.writeText(key).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'COPIED ✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'COPY';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  generateKey();
+</script>
+</body>
+</html>
